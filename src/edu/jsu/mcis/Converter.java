@@ -69,8 +69,7 @@ public class Converter {
             for (int i = 0; i < line.length; ++i){
                 String field = line[i];
                 colHeaders.add(field);
-            }
-            //line = iterator.next();
+            } 
             
             while (iterator.hasNext()){
                 line = iterator.next();
@@ -112,19 +111,39 @@ public class Converter {
             CSVWriter csvWriter = new CSVWriter(writer, ',', '"', '\n');
             // INSERT YOUR CODE HERE
             
-            JSONArray colHeaders = (JSONArray) jsonObject.get("colHeaders");
-            JSONArray rowHeaders = (JSONArray) jsonObject.get("rowHeaders");
-            JSONArray data = (JSONArray) jsonObject.get("data");
+            //Convert all jsons to String Arrays??? Sir: Convert all jsons to Strings then put in csv???
+            //Convert JSONS to String Array Lists
+            ArrayList<String> colHeaders = (ArrayList<String>) jsonObject.get("colHeaders");
+            ArrayList<String> rowHeaders = (ArrayList<String>) jsonObject.get("rowHeaders");
+            ArrayList data = (ArrayList) jsonObject.get("data");
             
             
-            //csvWriter.writeNext(csvData);
-            String csvString = writer.toString();
+            String[] colHeads = new String[colHeaders.size()];
+            ArrayList dataRow;
             
             
+            for(int i = 0 ; i < colHeaders.size(); i++){
+                colHeads[i] = (String)colHeaders.get(i);
+            }
             
+            //Parse Data using csvwriter
+            csvWriter.writeNext(colHeads);
             
+            for(int i = 0; i < rowHeaders.size(); i++){
+                String[] rowAndData = new String[colHeaders.size()];
+                //For Row Headers
+                rowAndData[0] = rowHeaders.get(i);
+                
+                dataRow = (ArrayList)data.get(i);
+                for(int j = 0; j < dataRow.size(); j++){
+                    //For Data each row
+                    rowAndData[j+1] = Long.toString((Long)dataRow.get(j));
+                }
+                //Parse Data using csvwriter
+                csvWriter.writeNext(rowAndData);
+            }
             
-            
+            results+=writer.toString();
             
         }
         
